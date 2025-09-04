@@ -19,11 +19,14 @@
             </div>
             <div class="toogle"></div>
         </div>
-        <div class="weather">Current weather</div>
+        <div class="weather">
+            Current weather 
+            <div id="txt"></div></div>
+        
         <div class="forecast">Forecast</div>
         <div class="small">
-            <div class="air">Air</div>
-            <div class="wind">Wind</div>
+            <div class="air">Air <br><br><?php echo $weatherData['list'][0]['clouds']?></div>
+            <div class="wind">Wind <br><br><?php echo $weatherData['list'][0]['speed'] . "km/h"?></div>
             <div class="humidity">Humitidy</div>
             <div class="visibility">Visibility</div>
             <div class="pressure_in">Pressure in</div>
@@ -32,6 +35,6 @@
         <div class="sunmoon">Sun & Moon</div>
 
     </div>
-
+<script src="script.js"></script>
 </body>
 </html>
