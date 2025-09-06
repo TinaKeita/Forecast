@@ -43,20 +43,33 @@
             <img src="gif/settings.gif" alt="Settings" class="nav-icon">
         </div>
     </nav>
-        <div class="weather"> 
-            Current weather 
-            <?php $today = $weatherData['list'][0]; ?>
-            <div id="txt"></div>
-            <p>Temperature <?php echo round($today['temp']['day']); ?>°C</p>
-            <p>Current wind direction: 
-                <?php 
-                    $deg = $weatherData['list'][0]['deg'];
-                    echo windDirection($deg);
-                ?>
-            </p>
-            <p>Feels like: <?php echo round($today['feels_like']['day']); ?>°C</p>
-            <p><?php echo ucfirst($today['weather'][0]['description']); ?></p>
+
+
+    <!-- Current weather -->
+    <div class="weather"> 
+        <p>Current weather</p>
+        <?php $today = $weatherData['list'][0]; ?>
+
+        <div id="txt"></div>
+
+        <div class="temp-row">
+            <div class="temp_container">
+                <img src="gif/sun.png" alt="Bell" class="sun-icon">   
+                <p class="big-temp"><?php echo round($today['temp']['day']); ?>°C </p>
+            </div>
+            <div class="about_container">
+                <p><?php echo ucfirst($today['weather'][0]['description']); ?></p>
+                <p>Feels like: <?php echo round($today['feels_like']['day']); ?>°C</p>
+            </div> 
         </div>
+        
+         <p>Current wind direction: 
+            <?php 
+                $deg = $weatherData['list'][0]['deg'];
+                echo windDirection($deg);
+            ?>
+        </p>
+     </div>
         
         <!-- forecast priekš dienas daļām -->
         <div class="forecast">

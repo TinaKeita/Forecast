@@ -17,7 +17,7 @@ time, mark, audio, video {
 	border: 0;
 }
 
-/* Base */
+/* mans kods */
 body {
     background-color: #f3f4f6;
     font-family: sans-serif;
@@ -53,7 +53,7 @@ body {
     right: 20px;
     z-index: 100;
     background: #ffffff;
-    padding: 35px 25px;
+    padding: 37px 25px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     display: flex;
     justify-content: space-between; /* lai attdalitu dalas */
@@ -135,9 +135,50 @@ body {
     }
 }
 
+/* Current weather */
 .weather {
+    display:flex;
+    flex-direction: column;
+    gap:15px;
+    padding: 30px;;
     grid-area: weather;
     min-height: 180px;
+}
+
+.detail_container{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
+.temp-row{
+    display:grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap:15px;
+}
+.temp_container{
+    display:flex;
+    align-items: center;
+    gap:10px;
+}
+.about_container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:5px;
+    height: 100%;
+}
+.big-temp{
+    font-size:50px;
+    font-weight: 600;
+}
+#txt{
+    font-size:20px;
+    font-weight: 600;
+}
+.sun-icon {
+    width: 40px;
+    height: 40px;;
 }
 
 .forecast {
