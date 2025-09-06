@@ -1,12 +1,31 @@
-<?php $data = file_get_contents("https://emo.lv/weather-api/forecast/?city=cesis,latvia");?>
-<?php $weatherData = json_decode($data, true);?>
-    <?php
-    function windDirection($deg) {
-        $directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
-        return $directions[round($deg / 45) % 8];
+<?php
+date_default_timezone_set('Europe/Riga');
+$city = "cesis,latvia";
+if (isset($_POST["search"]) && !empty($_POST["search"])) {
+    $city = $_POST["search"];
+}
+// api beigas jaunajai pilsetai
+$api_url = "https://emo.lv/weather-api/forecast/?city=" . urlencode($city);
+$data = @file_get_contents($api_url);
+// vai api aizgaja
+if ($data === false) {
+    $errorMessage = "Error: Could not fetch weather data from the API.";
+    $weatherData = null; 
+} else {
+    $weatherData = json_decode($data, true);
+    
+    // ja dati ir valid
+    if (json_last_error() !== JSON_ERROR_NONE || !isset($weatherData['list'])) {
+        $errorMessage = "Error: Invalid data received from the weather API.";
+        $weatherData = null;
     }
-    ?>
+}
 
+function windDirection($deg) {
+    $directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
+    return $directions[round($deg / 45) % 8];
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -29,13 +48,15 @@
         </div>
 
         <div class="navbar-center">
-            <div class="search-container">
-                <input type="text" placeholder="Search Location" class="search-bar">
-                <img src="gif/search.png" class="search-icon">
-                <img src="gif/worldwide.gif" class="worldwide-icon">
-            </div>
+            <form method="post" action="index.php" class="search-container">
+                    <input type="text" name="search" placeholder="<?php echo isset($weatherData['city']['name']) ? $weatherData['city']['name'] : 'Search city'; ?>" class="search-bar">
+                    <button type="submit" style="background:none;border:none;padding:0;">
+                        <img src="gif/search.png" class="search-icon">
+                    </button>
+                    <img src="gif/worldwide.gif" class="worldwide-icon">
+            </form>
 
-            <button class="darkmode">Dark</button>
+            <button class="darkmode" onclick="dark_mode(this)">Dark</button>
         </div>
 
         <div class="navbar-right">
@@ -47,8 +68,17 @@
 
     <!-- Current weather -->
     <div class="weather"> 
-        <p>Current weather</p>
-        <?php $today = $weatherData['list'][0]; ?>
+    <?php $today = $weatherData['list'][0]; ?>   
+        <div class="top-row">
+            <p>Current weather</p>
+        
+            <div class="select">
+                <select class="select">
+                    <option>Celsius and Kilometers</option>
+                    <option>Fahrenheit and Miles</option>
+                </select>
+            </div>
+        </div>
 
         <div id="txt"></div>
 
@@ -62,7 +92,7 @@
                 <p>Feels like: <?php echo round($today['feels_like']['day']); ?>°C</p>
             </div> 
         </div>
-        
+
          <p>Current wind direction: 
             <?php 
                 $deg = $weatherData['list'][0]['deg'];
@@ -71,70 +101,125 @@
         </p>
      </div>
         
-        <!-- forecast priekš dienas daļām -->
-        <div class="forecast">
-            <h2>Forecast (Today)</h2>
-
-            <div class="forecast-row">
-                <span class="time">Morning</span>
-                <span class="condition"><?php echo $weatherData['list'][0]['weather'][0]['main']; ?></span>
-                <span class="separator">|</span>
-                <span class="temp"><?php echo round($weatherData['list'][0]['temp']['morn']); ?>°C</span>
-                <span class="wind_today">💨 <?php echo round($weatherData['list'][0]['speed']); ?> m/s</span>
-                <span class="humidity_today">💧 <?php echo $weatherData['list'][0]['humidity']; ?>%</span>
-            </div>
-
-            <div class="forecast-row">
-                <span class="time">Day</span>
-                <span class="condition"><?php echo $weatherData['list'][0]['weather'][0]['main']; ?></span>
-                <span class="separator">|</span>
-                <span class="temp"><?php echo round($weatherData['list'][0]['temp']['day']); ?>°C</span>
-                <span class="wind_today">💨 <?php echo round($weatherData['list'][0]['speed']); ?> m/s</span>
-                <span class="humidity_today">💧 <?php echo $weatherData['list'][0]['humidity']; ?>%</span>
-            </div>
-
-            <div class="forecast-row">
-                <span class="time">Evening</span>
-                <span class="condition"><?php echo $weatherData['list'][0]['weather'][0]['main']; ?></span>
-                <span class="separator">|</span>
-                <span class="temp"><?php echo round($weatherData['list'][0]['temp']['eve']); ?>°C</span>
-                <span class="wind_today">💨 <?php echo round($weatherData['list'][0]['speed']); ?> m/s</span>
-                <span class="humidity_today">💧 <?php echo $weatherData['list'][0]['humidity']; ?>%</span>
-            </div>
-
-            <div class="forecast-row">
-                <span class="time">Night</span>
-                <span class="condition"><?php echo $weatherData['list'][0]['weather'][0]['main']; ?></span>
-                <span class="separator">|</span>
-                <span class="temp"><?php echo round($weatherData['list'][0]['temp']['night']); ?>°C</span>
-                <span class="wind_today">💨 <?php echo round($weatherData['list'][0]['speed']); ?> m/s</span>
-                <span class="humidity_today">💧 <?php echo $weatherData['list'][0]['humidity']; ?>%</span>
-            </div>
-        </div>
-
         <!-- mazās kastes -->
         <div class="small">
-            <div class="air">Air <br><br><?php echo $weatherData['list'][0]['clouds']?></div>
-            <div class="wind">Wind <br><br><?php echo $weatherData['list'][0]['speed'] . " km/h"?></div>
-            <div class="humidity">Humitidy <br><br><?php echo $weatherData['list'][0]['humidity'] . "%"?></div>
-            <div class="visibility">Visibility</div>
-            <div class="pressure_in">Pressure in <br><br>
-            <?php 
-                $pressure_original = $weatherData['list'][0]['pressure'];
-                $pressure_in = round($pressure_original * 0.02953, 2);
-                echo $pressure_in . ' in';
-            ?>
+            <div class="air">
+                <div class="line">
+                    <img src="gif/clouds.gif" alt="clouds" class="nav-icon">
+                    <div class="row">
+                        <p>Air quality</p>
+                        <p class='data-value'><?php echo $weatherData['list'][0]['clouds']?></p>
+                    </div>
+                </div>
             </div>
-            <div class="pressure">Pressure <br><br><?php echo $weatherData['list'][0]['pressure'] . "°"?></div>
+            <div class="wind">
+                <div class="line">
+                    <img src="gif/wind.gif" alt="clouds" class="nav-icon">
+                    <div class="row">
+                        <p>Wind</p>
+                        <p class='data-value'><?php echo $weatherData['list'][0]['speed'] . " km/h"?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="humidity">
+                <div class="line">
+                    <img src="gif/humidity.gif" alt="clouds" class="nav-icon">
+                    <div class="row">
+                        <p>Humitidy</p>
+                        <p class='data-value'> <?php echo $weatherData['list'][0]['humidity'] . "%"?></p>
+                    </div>
+                </div>
+            </div>
+            <div class="visibility">
+                <div class="line">
+                    <img src="gif/vision.gif" alt="clouds" class="nav-icon">
+                    <div class="row">
+                        <p>Visibility</p>
+                        <p class='data-value'> 10 km/h</p>
+                    </div>
+                </div>
+            </div>
+            <div class="pressure_in">
+                <div class="line">
+                    <img src="gif/air-pump.gif" alt="clouds" class="nav-icon">
+                    <div class="row">
+                        <p>Pressure in</p>
+                        <p class='data-value'>
+                            <?php
+                                $pressure_original = $weatherData['list'][0]['pressure'];
+                                $pressure_in = round($pressure_original * 0.02953, 2);
+                                echo $pressure_in . ' in';
+                            ?>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="pressure">
+            <div class="line">
+                <img src="gif/air-pump.gif" alt="clouds" class="nav-icon">
+                <div class="row">
+                    <p>Pressure </p>
+                    <p class='data-value'><?php echo $weatherData['list'][0]['pressure'] . "°"?></p>
+                </div>
+            </div>
+            </div>
         </div>
 
         <!-- saulriets / saullēkts -->
         <div class="sunmoon">
-            <p>Sun & Moon Summary</p>
-            <p>Sunrise <?php echo date('g:i A', $weatherData['list'][0]['sunrise']); ?></p>
-            <p>Sunset <?php echo date('g:i A', $weatherData['list'][0]['sunset']); ?></p>
-        </div>
+            <div class="sun_top"><p>Sun & Moon Summary</p></div>
+            <div class="sunrise">
+                <div class="quality">
+                    <img src="gif/sun.gif" alt="sun" class="sunrise-icon">
+                    <div class="middle_vertical">
+                        <p>Air Quality</p>
+                        <p style="font-weight:bold;"><?php echo $weatherData['list'][0]['clouds']?></p>
+                    </div> 
+                </div> 
+                <div class="time-arc-wrapped">
+                <div class="time">
+                    <img src="gif/sunrise.gif" alt="sunrise" class="sunrise-icon">
+                    <p>Sunrise</p>
+                    <p style="font-weight:bold;"><?php echo date('g:i A', $weatherData['list'][0]['sunrise']); ?></p>
+                </div>
+                <div class="arc">
+                    <svg width="100" height="50" viewBox="0 0 100 50">
+                    <path 
+                        id="bg-arc"
+                        d="M 10 50 A 40 40 0 1 1 90 50"
+                        fill="transparent"
+                        stroke="#E0E0E0" 
+                        stroke-width="10"
+                        
+                    />
+                      <path
+                        id="progress-arc"
+                        d="M 10 50 A 40 40 0 1 1 90 50"
+                        fill="transparent"
+                        stroke="orange"
+                        stroke-width="10"
+                    />
+                    </svg>
 
+                </div>
+
+                <div class="time">
+                    <img src="gif/sunset.gif" alt="sunrise" class="sunrise-icon">
+                    <p>Sunset</p>
+                    <p style="font-weight:bold;"><?php echo date('g:i A', $weatherData['list'][0]['sunset']); ?></p>
+                </div>    
+                </div>
+            </div>
+        </div>
+       <!-- forecast priekš dienas daļām -->
+        <div class="forecast">
+            <div class="buttons">
+                <button class="today">Today</button>
+                <button class="tomorrow">Tomorrow</button>
+                <button class="ten_days">10 days</button>
+            </div>
+    <div id="forecast-content">
+        </div>
     </div>
 <script src="script.js"></script>
 </body>
