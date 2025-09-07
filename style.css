@@ -36,8 +36,15 @@ body.dark-mode .humidity,
 body.dark-mode .visibility,
 body.dark-mode .pressure_in,
 body.dark-mode .pressure,
-body.dark-mode .sunmoon {
+body.dark-mode .sunmoon,
+body.dark-mode .popup-content {
     background-color: #4b5563;
+    color: white;
+}
+body.dark-mode .forecast-row[data-day-index]:hover {
+  background: #5e6a7b ;
+}
+body.dark-mode .forecast .buttons button{
     color: white;
 }
 .darkmode{
@@ -287,6 +294,45 @@ body.dark-mode .sunmoon {
 .buttons{
     gap:20px;
 }
+/* prieks popup */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-popup {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.forecast-row[data-day-index] {
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.forecast-row[data-day-index]:hover {
+  background: #f0f0f0;
+}
 
 /* Small boxes row */
 .small {
@@ -372,6 +418,7 @@ svg {
     gap:10px;
 
 }
+/* saules arc */
 .arc{
     width:auto;
     text-align: center;
@@ -391,7 +438,7 @@ svg {
   transition: stroke-dashoffset 1s linear;
 }
 
-/* mobile izskats ar@media */
+/* mobile izskats */
 @media(max-width: 768px){
 .container{
     display:flex;
@@ -449,8 +496,12 @@ svg {
     padding: 5px;
     padding-left: 5px;
     text-align: center;
+    width: 100%;
+    justify-content: space-between;
   }
-
+    .forecast-row .day-info {
+    margin: 0;
+}
   #forecast-content {
     display: flex;
     flex-wrap: wrap;

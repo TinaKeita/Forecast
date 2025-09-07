@@ -1,5 +1,22 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // priekš 10 dienu popup
+    document.addEventListener('click', function (event) {
+        let row = event.target.closest('.forecast-row[data-day-index]');
+        if (row) {
+            let dayIndex = row.getAttribute('data-day-index');
+            fetch('get_day_parts.php?day=' + dayIndex)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('popup-details').innerHTML = html;
+                    document.getElementById('day-popup').style.display = 'flex';
+                });
+        }
 
+        // aizver popup uz klikšķa
+        if (event.target.classList.contains('close-popup') || event.target.id === 'day-popup') {
+            document.getElementById('day-popup').style.display = 'none';
+        }
+    });
 // pulkstenis  
 function startTime() {
     const now = new Date();
@@ -127,4 +144,4 @@ document.addEventListener('DOMContentLoaded', function () {
     updateSunArc();
     // atjauno ik minuti
     setInterval(updateSunArc, 60000);
-});
+})

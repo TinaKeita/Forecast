@@ -10,14 +10,14 @@
     $data = @file_get_contents($api_url);
     // vai api aizgaja
     if ($data === false) {
-        $errorMessage = "Error: Could not fetch weather data from the API.";
+        $errorMessage = "Nevar piekļut datiem";
         $weatherData = null; 
     } else {
         $weatherData = json_decode($data, true);
         
         // ja dati ir valid
         if (json_last_error() !== JSON_ERROR_NONE || !isset($weatherData['list'])) {
-            $errorMessage = "Error: Invalid data received from the weather API.";
+            $errorMessage = "Nederīgi dati";
             $weatherData = null;
         }
     }
@@ -27,6 +27,7 @@ function windDirection($deg) {
     return $directions[round($deg / 45) % 8];
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +52,7 @@ function windDirection($deg) {
         <div class="navbar-center">
             <form method="post" action="index.php" class="search-container">
                     <input type="text" name="search" placeholder="<?php echo isset($weatherData['city']['name']) ? $weatherData['city']['name'] : 'Search city'; ?>" class="search-bar">
-                    <button type="submit" style="background:none;border:none;padding:0;">
+                    <button type="submit" style="background:none; border:none; padding:0;">
                         <img src="gif/search.png" class="search-icon">
                     </button>
                     <img src="gif/worldwide.gif" class="worldwide-icon">
@@ -221,9 +222,17 @@ function windDirection($deg) {
             </div>
     <div id="forecast-content">
     </div>
-    
+    <div id="day-popup" class="popup-overlay" style="display:none;">
+    <div class="popup-content">
+        <span class="close-popup">&times;</span>
+        <div id="popup-details">
+        <!-- šeit būs dienas datu daļas priekš dienas -->
+        </div>
     </div>
-    
+    </div>
+
+    </div>
+
 <script>
   window.sunTimes = {
     sunrise: <?php echo $weatherData['list'][0]['sunrise']; ?> * 1000,
