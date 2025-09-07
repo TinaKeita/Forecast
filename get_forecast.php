@@ -8,9 +8,11 @@ $forecastData = $weatherData['list'][$dayIndex];
 $isTenDays = isset($_GET['view']) && $_GET['view'] === '10days';
 
 if ($isTenDays) {
-    // desmit dienam
+    // priekš 10 dienām
     for ($i = 2; $i < 10 && $i < count($weatherData['list']); $i++) {
         $dayData = $weatherData['list'][$i];
+        $tempC = round($dayData['temp']['day']);
+        $windKmh = round($dayData['speed'] * 3.6); // Convert m/s to km/h
 ?>
         <div class="forecast-row" data-day-index="<?php echo $i; ?>">
             <img src="gif/sun.png" alt="weather icon" class="nav-icon">
@@ -19,9 +21,9 @@ if ($isTenDays) {
                 <span class="condition"><?php echo date('Y-m-d', $dayData['dt']); ?></span>
             </div>
             <div class="details-column">
-                <span class="temp"><?php echo round($dayData['temp']['day']); ?>°C</span>
+                <span class="temp" data-c="<?php echo $tempC; ?>"><?php echo $tempC; ?>°C</span>
                 <div class="stacked-details">
-                    <span class="wind_today"><p>Wind: <?php echo round($dayData['speed']); ?> m/s</p></span>
+                    <span class="wind_today" data-km="<?php echo $windKmh; ?>"><p>Wind: <?php echo $windKmh; ?> km/h</p></span>
                     <span class="humidity_today"><p>Humidity: <?php echo $dayData['humidity']; ?>%</p></span>
                 </div>
             </div>
@@ -29,7 +31,7 @@ if ($isTenDays) {
 <?php
     }
 } else {
-    // Priekš pašas dienas
+    // priekš šīs dienas
     $dayParts = ['morn', 'day', 'eve', 'night'];
     $dayNames = ['Morning', 'Day', 'Evening', 'Night'];
     $iconParts = ['half-moon', 'sun', 'sun', 'half-moon'];
@@ -38,6 +40,8 @@ if ($isTenDays) {
         $dayPart = $dayParts[$i];
         $dayName = $dayNames[$i];
         $icon = $iconParts[$i];
+        $tempC = round($forecastData['temp'][$dayPart]);
+        $windKmh = round($forecastData['speed'] * 3.6); // ms uz km/h
 ?>
         <div class="forecast-row">
             <img src="gif/<?php echo $icon; ?>.png" alt="weather icon" class="nav-icon">
@@ -46,9 +50,9 @@ if ($isTenDays) {
                 <span class="condition"><?php echo $forecastData['weather'][0]['main']; ?></span>
             </div>
             <div class="details-column">
-                <span class="temp"><?php echo round($forecastData['temp'][$dayPart]); ?>°C</span>
+                <span class="temp" data-c="<?php echo $tempC; ?>"><?php echo $tempC; ?>°C</span>
                 <div class="stacked-details">
-                    <span class="wind_today"><p>Wind: <?php echo round($forecastData['speed']); ?> m/s</p></span>
+                    <span class="wind_today" data-km="<?php echo $windKmh; ?>"><p>Wind: <?php echo $windKmh; ?> km/h</p></span>
                     <span class="humidity_today"><p>Humidity: <?php echo $forecastData['humidity']; ?>%</p></span>
                 </div>
             </div>

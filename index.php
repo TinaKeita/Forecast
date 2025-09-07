@@ -74,9 +74,9 @@ function windDirection($deg) {
             <p class="main">Current weather</p>
         
             <div class="select">
-                <select class="select">
-                    <option>Celsius and Kilometers</option>
-                    <option>Fahrenheit and Miles</option>
+                <select class="select" id="unitSelect">
+                    <option value="CK">Celsius and Kilometers</option>
+                    <option value="FM">Fahrenheit and Miles</option>
                 </select>
             </div>
         </div>
@@ -223,6 +223,14 @@ function windDirection($deg) {
     </div>
     
     </div>
+    
+<script>
+  window.sunTimes = {
+    sunrise: <?php echo $weatherData['list'][0]['sunrise']; ?> * 1000,
+    sunset: <?php echo $weatherData['list'][0]['sunset']; ?> * 1000
+  };
+</script>
+
 <script src="script.js"></script>
 </body>
 </html>

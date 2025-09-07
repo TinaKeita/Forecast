@@ -385,6 +385,11 @@ svg {
     height: 100%;
     display:block;
 }
+#progress-arc {
+  stroke-dasharray: 125.6; /* aptuvenais pusapla lielums */
+  stroke-dashoffset: 125.6; /* paslepts */
+  transition: stroke-dashoffset 1s linear;
+}
 
 /* mobile izskats ar@media */
 @media(max-width: 768px){

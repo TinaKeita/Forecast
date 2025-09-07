@@ -1,40 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    
-    // priekš saules līnijas (nestrada)
-    function updateSunArc() {
-        const sunmoonContainer = document.querySelector('.sunmoon');
-        const progressArc = document.getElementById('progress-arc');
-
-        // vai elements vispār ir
-        if (!sunmoonContainer || !progressArc) return;
-
-        // parveido timestamps uz milisekundēm
-        const sunriseTime = parseInt(sunmoonContainer.dataset.sunrise) * 1000;
-        const sunsetTime = parseInt(sunmoonContainer.dataset.sunset) * 1000;
-        const now = new Date().getTime();
-
-        let progress = 0;
-        const pathLength = progressArc.getTotalLength();
-        if (pathLength === 0) {
-            // Path is not rendered yet, exit and try again later
-            return;
-        }
-        // izrēķina prgogresu konkretajai dienas stundai
-        if (now > sunriseTime && now < sunsetTime) {
-            progress = (now - sunriseTime) / (sunsetTime - sunriseTime);
-        } else if (now >= sunsetTime) {
-            //pec saulrieta ir pilns
-            progress = 1;
-        }
-
-        // strokeDashoffset zimē līniju
-    progressArc.style.strokeDasharray = pathLength;
-        progressArc.style.strokeDashoffset = pathLength * (1 - progress);
-    }
-
-    updateSunArc();
-    // update katru minutit
-    setInterval(updateSunArc, 60000);
 
 // pulkstenis  
 function startTime() {
@@ -83,8 +47,9 @@ window.onload = startTime;
         });
     });
 
-    // Load the "Today" forecast on page load
+    // vienmer sakuma ielādē šodienas datus
     loadForecast({ day: 0 });
+    
     
 });
 // dark mode
@@ -100,3 +65,66 @@ function dark_mode(btn) {
         btn.textContent = "Light";
     }
 }
+const unitSelect = document.getElementById('unitSelect');
+
+// farenheit un miles selects
+unitSelect.addEventListener('change', () => {
+    const unit = unitSelect.value;
+    
+    //maina temperturas
+    document.querySelectorAll('.big-temp, .weather-temp, .feels-like, .forecast-row .temp').forEach(el => {
+        const c = parseFloat(el.getAttribute('data-c'));
+        if (!isNaN(c)) {
+            let convertedTemp = unit === 'FM' ? (c * 9/5 + 32) : c;
+            let tempUnit = unit === 'FM' ? "°F" : "°C";
+
+            if (el.classList.contains('feels-like')) {
+                el.textContent = `Feels Like ${convertedTemp.toFixed(1)}${tempUnit}`;
+            } else {
+                el.textContent = `${convertedTemp.toFixed(1)}${tempUnit}`;
+            }
+        }
+    });
+
+    // --- maina vēja ātrumu
+    document.querySelectorAll('.wind-speed, .forecast-row .wind_today').forEach(el => {
+        const kmh = parseFloat(el.getAttribute('data-km'));
+        if (!isNaN(kmh)) {
+            let convertedSpeed = unit === 'FM' ? (kmh / 1.609) : kmh;
+            let speedUnit = unit === 'FM' ? " mph" : " km/h";
+
+            if (el.classList.contains('wind-speed')) {
+                el.textContent = `${convertedSpeed.toFixed(1)}${speedUnit}`;
+            } else {
+                el.innerHTML = `<p>Wind: ${convertedSpeed.toFixed(1)}${speedUnit}</p>`;
+            }
+        }
+    });
+});
+// priekš saules arc
+function updateSunArc() {
+    const arc = document.getElementById('progress-arc');
+    if (!arc || !window.sunTimes) return;
+
+    const sunrise = window.sunTimes.sunrise;
+    const sunset = window.sunTimes.sunset;
+    const now = Date.now();
+    const totalLength = 125.6; //pusapla garums
+
+    // Apreķina cik daudz ir jāaizpilda
+
+    if (now < sunrise) {
+        arc.style.strokeDashoffset = totalLength; // nav sācies
+    } else if (now > sunset) {
+        arc.style.strokeDashoffset = 0; // pilnībā pilns
+    } else {
+        const progress = (now - sunrise) / (sunset - sunrise);
+        arc.style.strokeDashoffset = totalLength * (1 - progress);
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    updateSunArc();
+    // atjauno ik minuti
+    setInterval(updateSunArc, 60000);
+});
