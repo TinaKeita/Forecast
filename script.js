@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('day-popup').style.display = 'none';
         }
     });
+
 // pulkstenis  
 function startTime() {
     const now = new Date();
@@ -30,8 +31,8 @@ function startTime() {
 
     setTimeout(startTime, 500);
 }
-
 window.onload = startTime;
+
 // prieks dienu maiņas
     const todayBtn = document.querySelector('.today');
     const tomorrowBtn = document.querySelector('.tomorrow');
@@ -66,22 +67,26 @@ window.onload = startTime;
 
     // vienmer sakuma ielādē šodienas datus
     loadForecast({ day: 0 });
-    
-    
+      
 });
+
 // dark mode
 function dark_mode(btn) {
-    var element = document.body;
-    element.classList.toggle("dark-mode");
-    
-    if (element.classList.contains("dark-mode")) {
-        //ja ir dark mode
-        btn.textContent = "Dark";
+    const body = document.body;
+    const img = btn.querySelector('img');
+    const text = btn.querySelector('.mode-text');
+
+    body.classList.toggle('dark-mode');
+
+    if (body.classList.contains('dark-mode')) {
+        img.src = 'gif/dark.png';
+        text.textContent = 'Dark';
     } else {
-        // ja ir light mode
-        btn.textContent = "Light";
+        img.src = 'gif/light.png';
+        text.textContent = 'Light';
     }
 }
+// priekš farenheit un miles
 const unitSelect = document.getElementById('unitSelect');
 
 // farenheit un miles selects
@@ -129,7 +134,6 @@ function updateSunArc() {
     const totalLength = 125.6; //pusapla garums
 
     // Apreķina cik daudz ir jāaizpilda
-
     if (now < sunrise) {
         arc.style.strokeDashoffset = totalLength; // nav sācies
     } else if (now > sunset) {

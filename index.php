@@ -58,7 +58,10 @@ function windDirection($deg) {
                     <img src="gif/worldwide.gif" class="worldwide-icon">
             </form>
 
-            <button class="darkmode" onclick="dark_mode(this)">Dark</button>
+            <button class="darkmode" onclick="dark_mode(this)">
+                <img src="gif/light.png" alt="Light Mode" class="theme-icon">
+                <span class="mode-text">Light</span>
+            </button>
         </div>
 
         <div class="navbar-right">
