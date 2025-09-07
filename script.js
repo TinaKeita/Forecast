@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // priekš saules līnijas
+    
+    // priekš saules līnijas (nestrada)
     function updateSunArc() {
         const sunmoonContainer = document.querySelector('.sunmoon');
         const progressArc = document.getElementById('progress-arc');
@@ -13,7 +14,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const now = new Date().getTime();
 
         let progress = 0;
-
+        const pathLength = progressArc.getTotalLength();
+        if (pathLength === 0) {
+            // Path is not rendered yet, exit and try again later
+            return;
+        }
         // izrēķina prgogresu konkretajai dienas stundai
         if (now > sunriseTime && now < sunsetTime) {
             progress = (now - sunriseTime) / (sunsetTime - sunriseTime);
@@ -23,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // strokeDashoffset zimē līniju
-        const pathLength = progressArc.getTotalLength();
+    progressArc.style.strokeDasharray = pathLength;
         progressArc.style.strokeDashoffset = pathLength * (1 - progress);
     }
 
@@ -44,19 +49,7 @@ function startTime() {
 
     setTimeout(startTime, 500);
 }
-// dark mode
-function dark_mode(btn) {
-    var element = document.body;
-    element.classList.toggle("dark-mode");
-    
-    if (element.classList.contains("dark-mode")) {
-        //ja ir dark mode
-        btn.textContent = "Dark";
-    } else {
-        // ja ir light mode
-        btn.textContent = "Light";
-    }
-}
+
 window.onload = startTime;
 // prieks dienu maiņas
     const todayBtn = document.querySelector('.today');
@@ -92,4 +85,18 @@ window.onload = startTime;
 
     // Load the "Today" forecast on page load
     loadForecast({ day: 0 });
+    
 });
+// dark mode
+function dark_mode(btn) {
+    var element = document.body;
+    element.classList.toggle("dark-mode");
+    
+    if (element.classList.contains("dark-mode")) {
+        //ja ir dark mode
+        btn.textContent = "Dark";
+    } else {
+        // ja ir light mode
+        btn.textContent = "Light";
+    }
+}

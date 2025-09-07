@@ -156,12 +156,6 @@ body.dark-mode .sunmoon {
     height:28px;
 }
 
-@media (min-width: 387px) {
-    .logo-text {
-        display: block;
-    }
-}
-
 /* Current weather */
 .weather {
     display:flex;
@@ -211,7 +205,7 @@ body.dark-mode .sunmoon {
     width: 40px;
     height: 40px;;
 }
-
+/* forecast */
 .forecast {
     grid-area: forecast;
     min-height: 500px;
@@ -240,6 +234,7 @@ body.dark-mode .sunmoon {
     font-size: 24px;
     font-weight: bold;
     text-align: center;
+    
 }
 .details-column {
     display: flex;
@@ -391,5 +386,78 @@ svg {
     display:block;
 }
 
+/* mobile izskats ar@media */
+@media(max-width: 768px){
+.container{
+    display:flex;
+    flex-direction: column;
+    padding: 100px 10px 20px;
+    padding-top: 120px;
+    gap: 15px;
+  }
+  /* prieks navbar */
+  .navbar-left img.nav-icon, .darkmode, .location, .navbar-right, .logo-text {
+    display: none;
+  }
+  .navbar-center{
+    padding: 0 10px;
+  }
+  .search-container .search-bar {
+    width: 100px; 
+  }
+  /* pārbīdam select */
+  .top-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .top-row .select {
+    width: 100%;
+  }
+  
+  /* mazas kastites */
+  .small {
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: auto auto auto;
+  }
 
+  /* sunmoon vertikali iebidam */
+  .sunrise {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .time-arc-wrapped {
+    order: 2; 
+    width: 100%;
+    justify-content: center;
+  }
 
+  /* forecast kartites */
+  .forecast-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    margin: 5px 0;
+    padding: 5px;
+    padding-left: 5px;
+    text-align: center;
+  }
+
+  #forecast-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    
+  }
+  .forecast{
+    padding: 5px;
+    gap:10px;
+  }
+  .forecast .buttons{
+    padding:10px;
+  }
+    
+}

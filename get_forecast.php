@@ -9,10 +9,10 @@ $isTenDays = isset($_GET['view']) && $_GET['view'] === '10days';
 
 if ($isTenDays) {
     // desmit dienam
-    for ($i = 0; $i < 10 && $i < count($weatherData['list']); $i++) {
+    for ($i = 2; $i < 10 && $i < count($weatherData['list']); $i++) {
         $dayData = $weatherData['list'][$i];
 ?>
-        <div class="forecast-row">
+        <div class="forecast-row" data-day-index="<?php echo $i; ?>">
             <img src="gif/sun.png" alt="weather icon" class="nav-icon">
             <div class="day-info">
                 <span class="daytime"><?php echo date('D', $dayData['dt']); ?></span>

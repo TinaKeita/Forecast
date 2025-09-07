@@ -1,25 +1,26 @@
 <?php
-date_default_timezone_set('Europe/Riga');
-$city = "cesis,latvia";
-if (isset($_POST["search"]) && !empty($_POST["search"])) {
-    $city = $_POST["search"];
-}
-// api beigas jaunajai pilsetai
-$api_url = "https://emo.lv/weather-api/forecast/?city=" . urlencode($city);
-$data = @file_get_contents($api_url);
-// vai api aizgaja
-if ($data === false) {
-    $errorMessage = "Error: Could not fetch weather data from the API.";
-    $weatherData = null; 
-} else {
-    $weatherData = json_decode($data, true);
-    
-    // ja dati ir valid
-    if (json_last_error() !== JSON_ERROR_NONE || !isset($weatherData['list'])) {
-        $errorMessage = "Error: Invalid data received from the weather API.";
-        $weatherData = null;
+    date_default_timezone_set('Europe/Riga');
+    $city = "cesis,latvia";
+
+    if (isset($_POST["search"]) && !empty($_POST["search"])) {
+        $city = $_POST["search"];
     }
-}
+    // api beigas jaunajai pilsetai
+    $api_url = "https://emo.lv/weather-api/forecast/?city=" . urlencode($city);
+    $data = @file_get_contents($api_url);
+    // vai api aizgaja
+    if ($data === false) {
+        $errorMessage = "Error: Could not fetch weather data from the API.";
+        $weatherData = null; 
+    } else {
+        $weatherData = json_decode($data, true);
+        
+        // ja dati ir valid
+        if (json_last_error() !== JSON_ERROR_NONE || !isset($weatherData['list'])) {
+            $errorMessage = "Error: Invalid data received from the weather API.";
+            $weatherData = null;
+        }
+    }
 
 function windDirection($deg) {
     $directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
@@ -44,7 +45,7 @@ function windDirection($deg) {
             </svg>
             <p class="logo-text">VTDT Sky</p>
             <img src="gif/location.gif" alt="Location Icon" class="nav-icon">
-            <p><?php echo $weatherData['city']['name'] . ", " . $weatherData['city']['country'] ?></p>
+            <p class="location"><?php echo $weatherData['city']['name'] . ", " . $weatherData['city']['country'] ?></p>
         </div>
 
         <div class="navbar-center">
@@ -70,7 +71,7 @@ function windDirection($deg) {
     <div class="weather"> 
     <?php $today = $weatherData['list'][0]; ?>   
         <div class="top-row">
-            <p>Current weather</p>
+            <p class="main">Current weather</p>
         
             <div class="select">
                 <select class="select">
@@ -219,7 +220,8 @@ function windDirection($deg) {
                 <button class="ten_days">10 days</button>
             </div>
     <div id="forecast-content">
-        </div>
+    </div>
+    
     </div>
 <script src="script.js"></script>
 </body>
