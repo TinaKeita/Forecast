@@ -140,7 +140,7 @@ function windDirection($deg) {
                     <img src="gif/vision.gif" alt="clouds" class="nav-icon">
                     <div class="row">
                         <p>Visibility</p>
-                        <p class='data-value'> 10 km/h</p>
+                        <p class='data-value'> N/A</p>
                     </div>
                 </div>
             </div>
