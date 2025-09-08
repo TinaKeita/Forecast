@@ -8,19 +8,8 @@
     // api beigas jaunajai pilsetai
     $api_url = "https://emo.lv/weather-api/forecast/?city=" . urlencode($city);
     $data = @file_get_contents($api_url);
-    // vai api aizgaja
-    if ($data === false) {
-        $errorMessage = "Nevar piekļut datiem";
-        $weatherData = null; 
-    } else {
-        $weatherData = json_decode($data, true);
-        
-        // ja dati ir valid
-        if (json_last_error() !== JSON_ERROR_NONE || !isset($weatherData['list'])) {
-            $errorMessage = "Nederīgi dati";
-            $weatherData = null;
-        }
-    }
+    $weatherData = json_decode($data, true);
+
 
 function windDirection($deg) {
     $directions = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];
